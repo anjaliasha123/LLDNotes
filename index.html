@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLD - Notes </title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <header>
+        <h1>Low Level Design Notes</h1>
+        <h3>@AnjaliAsha</h3>
+    </header>
+    <div class="intro">
+        <p class="desc">This page contains notes that I used to prepare for LLD</p>
+        <div class="index">
+            <h2>Topics</h2>
+        <ol class="index">
+            <li><a href="#solid">SOLID Principles</a></li>
+            <li>Strategy Design Pattern</li>
+            <li>Observer Design Pattern</li>
+            <li>Decorator Design Pattern</li>
+        </ol>
+        </div>
+    </div>
+    <section id="solid">
+        <div class="solid">
+            <h1>SOLID PRINCIPLES OF OOP</h1>
+            <p>Advantages of using SOLID:</p>
+            <ul>
+                <li>Avoid code duplication</li>
+                <li>Easy to maintain code</li>
+                <li>Easy to understand</li>
+                <li>Reduces complexity</li>
+                <li>Flexible Software</li>
+            </ul>
+            <h3>SOLID</h3>
+            <ul>
+                <li><p><bold>S</bold>ingle Resposibility Principle</p> </li>
+                <li><p><bold>Open</bold>/Closed Principle</p></li>
+                <li><p><bold>L</bold>iskov Substitute Principle</p></li>
+                <li><p><bold>I</bold>nterface Segmented Principle</p></li>
+                <li><p><bold>D</bold>ependency Inversion Principle</p></li>
+            </ul>
+            
+        </div>
+        <section class="single">
+            <h3>Single Resposibility Principle</h3>
+            <p>A class should be responsonsible only to do a certain job. It should not be responsible to perform other things.</p>
+            <pre>
+                //Item class
+                public class Item {
+                    String name;
+                    double unitPrice;
+                    Item(String name, double unitPrice){
+                        this.name = name;
+                        this.unitPrice = unitPrice;
+                    }
+                }
+                //Invoice class
+                public class Invoice{
+                    public Item item;
+                    public double totalPrice;
+                    Invoice(Item item, double price){
+                        this.item = item;
+                        this.totalPrice = price;
+                    }
+                    public double totalPriceCalc(int quantity){
+                        return item.unitPrice*quantity;
+                    }
+                
+                    public void printInvoice(){
+                        //print invoice
+                    }
+                    public void saveToDB(){
+                        //save to database
+                    }
+                }
+            </pre>
+            <p>In the above two classes, the Invoice class is responsible to calculate the total price of the item, print the invoice and to save the invoce details in the database. However, it is possible that additional details
+                maybe required to be printed in the invoice later or the invoice needs to be saved in a file instead. Hence the Invoice class violates the SOLID principle.
+                Hence, we should split the responsibility of the invoice class into multiple different classes.
+            </p>
+            <pre>
+                public class Invoice{
+                    public Item item;
+                    public double totalPrice;
+                    Invoice(Item item, double price){
+                        this.item = item;
+                        this.totalPrice = price;
+                    }
+                    public double totalPriceCalc(int quantity){
+                        return item.unitPrice*quantity;
+                    }
+                    
+                }
+                class InvoiceSave{
+                    Invoice invoice;
+                    InvoiceSave(Invoice i){
+                        this.invoice = i;
+                    }
+                    public void saveToDB(){
+                        //save to database
+                    }
+                }
+                class InvoicePrint{
+                    Invoice invoice;
+                    InvoiceSave(Invoice i){
+                        this.invoice = i;
+                    }
+                    public void printInvoice(){
+                        //print invoice
+                    }
+                }
+            </pre>
+        </section>
+        <section class="open">
+            <h3>Open/Closed For Extension</h3>
+            <p>It should be open for extension but closed for modification. It means that sometime you may want to extend the behaviour of a class. So we would add a new method to an already tested class that is live and running. 
+                This violates Open/Closed Principle. Rather, we should convert the class into an interface and override the behaviours it has to extend its functionality;
+            </p>
+            <pre>
+                public class InvoiceSave{
+                    Invoice invoice;
+                    InvoiceSave(Invoice i){
+                        this.invoice = i;
+                    }
+                    public void saveToDB(){
+                        //save to database
+                    }
+                }
+            </pre>
+            Here, the InvoiceSave is already tested and running. But a new requirement is to save the invoice to a file. Rather, than creating a new method, we could make the InvoiceSave as an intrface with an 
+            abstract method saveInvoiceInfo.
+            <pre>
+                public interface InvoiceSave{
+                    public void saveInvoiceData(Invoice invoice);
+                }
+                
+                class saveInvoiceDB implements InvoiceSave{
+                    @Override
+                    public void saveInvoiceData(Invoice invoice){
+                        //sve to DB
+                    }
+                }
+                class saveInvoiceFile implements InvoiceSave{
+                    @Override
+                    public void saveInvoiceData(Invoice invoice){
+                        //sve to file
+                    }
+                }
+            </pre>
+        </section>
+        <section class="liskov">
+            
+        </section>
+    </section>
+</body>
+
+</html>
